@@ -19,10 +19,15 @@ module Simpler
       send(action)
       write_response
 
+      @request.env['simpler.status'] = @response.status
       @response.finish
     end
 
     private
+
+    def status(number)
+      @response.status = number
+    end
 
     def extract_name
       self.class.name.match('(?<name>.+)Controller')[:name].downcase
