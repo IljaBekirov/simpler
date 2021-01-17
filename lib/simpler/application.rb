@@ -28,6 +28,8 @@ module Simpler
 
     def call(env)
       route = @router.route_for(env)
+      return bad_route unless route
+
       controller = route.controller.new(env)
       action = route.action
 
@@ -35,6 +37,10 @@ module Simpler
     end
 
     private
+
+    def bad_route
+      [404, {'Content-Type' => 'text/plain'}, ["Page not found\n"]]
+    end
 
     def require_app
       Dir["#{Simpler.root}/app/**/*.rb"].each { |file| require file }

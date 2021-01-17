@@ -19,17 +19,23 @@ module Simpler
       send(action)
       write_response
 
+      @request.env['simpler.status'] = @response.status
+      @request.env['simpler.headers'] = @response.headers
       @response.finish
     end
 
     private
+
+    def status(number)
+      @response.status = number
+    end
 
     def extract_name
       self.class.name.match('(?<name>.+)Controller')[:name].downcase
     end
 
     def set_default_headers
-      @response['Content-Type'] = 'text/html'
+      headers['Content-Type'] = 'text/html'
     end
 
     def write_response
@@ -43,12 +49,21 @@ module Simpler
     end
 
     def params
-      @request.params
+      @request.env['simpler.params'].merge!(@request.params)
     end
 
     def render(template)
+      edit_headers(template) if template.is_a?(Hash)
+
       @request.env['simpler.template'] = template
     end
 
+    def edit_headers(template)
+      headers['Content-Type'] = 'text/plain' if template.has_key?(:plain)
+    end
+
+    def headers
+      @response.headers
+    end
   end
 end
