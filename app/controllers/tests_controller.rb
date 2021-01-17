@@ -12,4 +12,6 @@ class TestsController < Simpler::Controller
     status 201
   end
 
+  def show
+  end
 end
