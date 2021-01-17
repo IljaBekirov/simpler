@@ -10,12 +10,24 @@ module Simpler
     end
 
     def render(binding)
+      case template
+      when Hash then check_key_template
+      else
+        default_template(binding)
+      end
+    end
+
+    private
+
+    def check_key_template
+      template[:plain] if template.has_key?(:plain)
+    end
+
+    def default_template(binding)
       template = File.read(template_path)
 
       ERB.new(template).result(binding)
     end
-
-    private
 
     def controller
       @env['simpler.controller']
