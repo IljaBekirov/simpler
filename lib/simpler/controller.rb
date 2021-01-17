@@ -20,6 +20,7 @@ module Simpler
       write_response
 
       @request.env['simpler.status'] = @response.status
+      @request.env['simpler.headers'] = @response.headers
       @response.finish
     end
 

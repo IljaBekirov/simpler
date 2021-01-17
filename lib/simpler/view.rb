@@ -25,7 +25,7 @@ module Simpler
 
     def default_template(binding)
       template = File.read(template_path)
-
+      @env['simpler.controller'].request.env['simpler.views'] = set_path
       ERB.new(template).result(binding)
     end
 
@@ -42,10 +42,12 @@ module Simpler
     end
 
     def template_path
-      path = template || [controller.name, action].join('/')
-
-      Simpler.root.join(VIEW_BASE_PATH, "#{path}.html.erb")
+      Simpler.root.join(VIEW_BASE_PATH, set_path)
     end
 
+    def set_path
+      path = template || [controller.name, action].join('/')
+      "#{path}.html.erb"
+    end
   end
 end
